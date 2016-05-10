@@ -1,0 +1,5 @@
+---
+mem: 16384
+vcpu: 4
+disk:
+  size: 50

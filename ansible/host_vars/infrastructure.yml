@@ -1,0 +1,20 @@
+---
+mem: 2048
+vcpu: 2
+disk:
+  path: "{{ inventory_hostname_short }}.qcow2"
+  size: 30
+  format: qcow2
+  partition_table:
+    lvmpv: 29500
+    swap: 2048
+    home: 2048
+    root: 10000
+
+repos:
+  - rhel-7-server-rpms
+  - rhel-7-server-optional-rpms
+  - rhel-7-server-extras-rpms
+packages:
+activation_key: AK-CV-OS-RHEL7-SERVER-PROD
+pool_regex: "{{ rhel_subscription_pool_regex }}"

@@ -1,0 +1,32 @@
+---
+mem: "{{ layer2_rhosp_director_mem }}"
+vcpu: "{{ layer2_rhosp_director_cpu }}"
+disk:
+  path: "{{ inventory_hostname_short }}.qcow2"
+  size: 30
+  format: qcow2
+  partition_table:
+    lvmpv: 29500
+    swap: 4096
+    home: 2048
+    root: 20000
+
+nic_attachments:
+  - "{{ infrastructure_network_rhosp_provisioning }}"
+  - "{{ infrastructure_network_services }}"
+  - "{{ infrastructure_network_admin }}"
+default_route_via: "{{ infrastructure_network_services }}"
+name_service_via: "{{ infrastructure_network_services }}"
+
+pool_regex: "{{ rhosp_subscription_pool_regex }}"
+repos: "{{ rhosp_repos }}"
+
+packages: python-rdomanager-oscplugin
+disable_services:
+  - NetworkManager
+
+image_path: /home/stack/images
+tripleo_template_path: /home/stack/my_templates
+
+ironic_rpc_timeout: 600
+nova_rpc_timeout: 600

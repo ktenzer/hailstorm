@@ -1,0 +1,7 @@
+- block:
+    - include: register_host.yml
+    - include: configure_nics.yml
+
+
+
+  when: mode=="create"

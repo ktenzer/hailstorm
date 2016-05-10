@@ -1,0 +1,13 @@
+- block:
+    - include: register_overcloud_nodes.yml
+      tags: ['register']
+    - include: create_overcloud.yml
+      tags: ['overcloud-deploy']
+    - include: configure_neutron.yml
+      tags: ['overcloud-deploy']
+  when: mode=="create"
+
+- block:
+    - include: destroy_overcloud.yml
+    - include: unregister_overcloud_nodes.yml
+  when: mode=="destroy"

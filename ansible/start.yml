@@ -1,0 +1,44 @@
+---
+
+#### Openshift ####
+
+- hosts: ose3
+  remote_user: root
+  gather_facts: false
+  roles:
+    - { role: layer2_vms, tags: [ 'layer2', 'rhev', 'vm' ], mode: start }
+
+
+#### RHEV ####
+
+- hosts: rhev
+  remote_user: root
+  gather_facts: false
+  roles:
+    - { role: layer2_vms, tags: [ 'layer2', 'rhev', 'vm' ], mode: start }
+
+
+#### IPA ####
+
+- hosts: ipa
+  remote_user: root
+  gather_facts: false
+  roles:
+    - { role: layer2_vms, tags: [ 'layer2', 'ipa', 'vm' ], mode: start }
+
+
+#### SATELLITE ####
+
+- hosts: satellite
+  remote_user: root
+  gather_facts: false
+  roles:
+    - { role: layer2_vms, tags: [ 'layer2', 'satellite', 'vm' ], mode: start }
+
+#### OPENSTACK ####
+
+- hosts: rhosp-all
+  remote_user: root
+  gather_facts: false
+  roles:
+    - { role: layer2_vms, tags: [ 'layer2', 'rhosp', 'vm' ], mode: start }

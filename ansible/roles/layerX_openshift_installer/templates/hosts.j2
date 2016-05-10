@@ -1,0 +1,45 @@
+# Create an OSEv3 group that contains the masters and nodes groups
+[OSEv3:children]
+masters
+nodes
+
+# Set variables common for all OSEv3 hosts
+[OSEv3:vars]
+# SSH user, this user should allow ssh based auth without requiring a password
+ansible_ssh_user=root
+
+# If ansible_ssh_user is not root, ansible_sudo must be set to true
+#ansible_sudo=true
+
+deployment_type=openshift-enterprise
+osm_default_subdomain=apps.{{ hailstorm_dns_domain }}
+
+
+# uncomment the following to enable htpasswd authentication; defaults to DenyAllPasswordIdentityProvider
+#openshift_master_identity_providers=[{'name': 'htpasswd_auth', 'login': 'true', 'challenge': 'true', 'kind': 'HTPasswdPasswordIdentityProvider', 'filename': '/etc/origin/master/htpasswd'}]
+{% if ipa_available|success and certificate|success %}
+#openshift_master_identity_providers=[{'name': 'ldap_ipa', 'challenge': 'true', 'login': 'true', 'kind': 'LDAPPasswordIdentityProvider', 'attributes': {'id': ['uid'], 'email': ['mail'], 'name': ['cn'], 'preferredUsername': ['uid']}, 'bindDN': 'uid=consumer,cn=users,cn=compat,dc=example,dc=com', 'bindPassword': '{{ root_password }}', 'ca': '', 'insecure': 'false', 'url': 'ldap://ipa.example.com:389/cn=compat,dc=example,dc=com?uid'}]
+openshift_master_identity_providers=[{'name': 'ldap_ipa', 'challenge': 'true', 'login': 'true', 'kind': 'LDAPPasswordIdentityProvider', 'attributes': {'id': ['uid'], 'email': ['mail'], 'name': ['cn'], 'preferredUsername': ['uid']}, 'bindDN': 'uid=ose-bind-user,cn=users,cn=compat,dc=example,dc=com', 'bindPassword': '{{ root_password }}', 'ca': 'ipa-ca.crt', 'insecure': 'false', 'url': 'ldap://ipa.example.com:389/cn=compat,dc=example,dc=com?uid?sub?(&(objectClass=posixAccount))'}]
+# Configuring the ldap ca certificate
+#openshift_master_ldap_ca='{#{ certificate.stdout }#}'
+# or
+openshift_master_ldap_ca_file=/etc/origin/master/ipa-ca.crt
+{% else %}
+openshift_master_identity_providers=[{'name': 'allow_all_auth', 'login': 'true', 'challenge': 'true', 'kind': 'AllowAllPasswordIdentityProvider' }]
+{% endif %}
+
+
+
+
+
+# host group for masters
+[masters]
+{% for master in groups["ose3-master"] %}
+{{ hostvars[master].hostname }}
+{% endfor %}
+
+# host group for nodes, includes region info
+[nodes]
+{% for node in groups["ose3-node"] %}
+{{ hostvars[node].hostname }} openshift_node_labels="{{ hostvars[node].openshift_node_labels }}"
+{% endfor %}

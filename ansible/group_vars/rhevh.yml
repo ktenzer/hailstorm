@@ -1,0 +1,20 @@
+mem: "{{ layer2_rhev_hypervisor_mem }}"
+vcpu: "{{ layer2_rhev_hypervisor_cpu }}"
+disk:
+  path: "{{ inventory_hostname_short }}.qcow2"
+  size: 30
+  format: qcow2
+  partition_table:
+    lvmpv: 29500
+    swap: 2048
+    home: 2048
+    root: 10000
+
+repos: "{{ rhevh_repos }}"
+pool_regex: "{{ rhev_subscription_pool_regex }}"
+
+packages: iptables-services
+ntp_client: ntpd
+
+disable_services:
+  - firewalld

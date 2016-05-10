@@ -1,0 +1,9 @@
+- block:
+    - include: prepare_host.yml
+    - include: create_stack_user.yml
+    - include: create_undercloud.yml
+    - include: import_images_to_undercloud_glance.yml
+  when: mode=="create"
+
+# - block:
+#   when: mode=="destroy"

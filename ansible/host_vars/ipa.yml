@@ -1,0 +1,108 @@
+---
+# work around a bug/feature (on the hailstorm side) when delegating, since "inventory_hostname_short"
+# will always resolve to the current host, it means that delegating to a string which contain
+# "inventory_hostname_short" means it delegates to iteself
+ansible_host: "{{ infrastructure_network_admin.host_prefix | regex_replace('(^.*\\.).*$','\\1') }}{{ hailstorm_number['ipa'] }}"
+
+
+mem: 2048
+vcpu: 2
+disk:
+  path: "{{ inventory_hostname_short }}.qcow2"
+  size: 30
+  format: qcow2
+  partition_table:
+    lvmpv: 29500
+    swap: 2048
+    home: 2048
+    root: 10000
+
+pool_regex: "{{ rhel_subscription_pool_regex }}"
+#activation_key: AK-CV-OS-RHEL7-SERVER-TEST
+
+ntp_client: ntp
+
+#poolid: 8a85f9843e3d687a013e3ddd471a083e
+repos: "{{ ipa_repos }}"
+packages: ipa-server,ipa-server-dns,rng-tools
+
+ipa_admin_password: "{{ root_password }}"
+
+firewalld_rules:
+ - DNStcp:
+   port: 53
+   protocol: udp
+   state: enabled
+   zone: public
+   permanent: true
+   immediate: true
+ - DNSudp:
+   port: 53
+   protocol: udp
+   state: enabled
+   zone: public
+   permanent: true
+   immediate: true
+ - HTTPtcp:
+   port: 80
+   protocol: tcp
+   state: enabled
+   zone: public
+   permanent: true
+   immediate: true
+ - LDAPtcp:
+   port: 389
+   protocol: tcp
+   state: enabled
+   zone: public
+   permanent: true
+   immediate: true
+ - HTTPStcp:
+   port: 443
+   protocol: tcp
+   state: enabled
+   zone: public
+   permanent: true
+   immediate: true
+ - LDAPStcp:
+   port: 636
+   protocol: tcp
+   state: enabled
+   zone: public
+   permanent: true
+   immediate: true
+ - KRB1tcp:
+   port: 88
+   protocol: tcp
+   state: enabled
+   zone: public
+   permanent: true
+   immediate: true
+ - KRB2tcp:
+   port: 464
+   protocol: tcp
+   state: enabled
+   zone: public
+   permanent: true
+   immediate: true
+ - KRB1udp:
+   port: 88
+   protocol: udp
+   state: enabled
+   zone: public
+   permanent: true
+   immediate: true
+ - KRB2udp:
+   port: 464
+   protocol: udp
+   state: enabled
+   zone: public
+   permanent: true
+   immediate: true
+ - NTPudp:
+   port: 123
+   protocol: udp
+   state: enabled
+   zone: public
+   permanent: true
+   immediate: true

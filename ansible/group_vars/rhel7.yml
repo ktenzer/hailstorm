@@ -1,0 +1,7 @@
+rhel_iso_img: "{{ rhel7_iso_image }}"
+os_type: linux
+os_variant: rhel7
+fstype: xfs
+selinux_mode: enforcing
+ntp_client: chrony
+#poolid: "{{ rhel7_subscription_poolid }}"
